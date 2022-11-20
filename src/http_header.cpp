@@ -7,8 +7,11 @@ http_header::~http_header() {}
 void http_header::set_client_header(const string& argv_client_header_str)
 {   
     client_header_str = argv_client_header_str;
-    client_header_str_index = 0;
-    client_header_init();
+}
+
+void http_header::show()
+{
+    cout << lin_str << endl;
 }
 
 void http_header::next_char(const string& str, int& str_index)
@@ -17,50 +20,34 @@ void http_header::next_char(const string& str, int& str_index)
         ++str_index;
 }
 
-void http_header::client_header_init()
+void http_header::update_lin_str()
 {
-    if (client_header_str.size() == 0)
-        std::logic_error("未初始化");
-}
-
-void http_header::header_request_init()
-{
-    if (client_header_str[0] == 'G' && client_header_str[2] == 'T')
+    next_char(client_header_str, client_header_str_index);
+    string().swap(lin_str);
+    int jsq = 0;
+    for (int& i = client_header_str_index; i < client_header_str.size(); ++i)
     {
-        client_header.request = "GET";
-        client_header_str_index + 3;
+        if (client_header_str[i] == '\"')
+        {
+            if (jsq == 0)
+                jsq = 1;
+            else
+                jsq = 0;
+        }
+        
+        if ((client_header_str[i] == '\n' || client_header_str[i] == '\r') && jsq == 0)
+            return;
+        
+        lin_str += client_header_str[i];   
     }
-    else
-    {
-        client_header.request = "POST";
-        client_header_str_index + 4;
-    }
 }
 
-void http_header::header_path_init()
+void http_header::add_header_map()
 {
-    next_char(client_header_str, client_header_str_index);
-
-    for (;client_header_str[client_header_str_index] != ' ';)
+    for (int& i = client_header_str_index; i < client_header_str.size();)
     {
-        client_header.path += client_header_str[client_header_str_index];
-        ++client_header_str_index;
-    }    
-}
-
-void http_header::header_http_version_init()
-{
-    next_char(client_header_str, client_header_str_index);
-
-    client_header.http_version = atof(client_header_str.substr(client_header_str_index + 5, client_header_str_index + 7).c_str());
-    client_header_str_index += 8;
-}
-
-void http_header::header_host_init()
-{
-    next_char(client_header_str, client_header_str_index);
-    if (client_header_str[client_header_str_index] == 'H' && (client_header_str[client_header_str_index +3] == 't' || client_header_str[client_header_str_index +3] == 'T'))
-    {
+        update_lin_str();
+        
     }
 }
 
