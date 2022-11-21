@@ -17,13 +17,15 @@ public:
     ~http_header();
 
 public:
+    const string& operator [](const string& argv_header_map_key);
+    bool count(const string& argv_header_map_key);
     void set_client_header(const string& argv_client_header_str);
-    void update_lin_str();
-    void add_header_map();
+    void init();
     void show();
 
 private:
     void next_char(const string& str, int& str_index);
+    void init_request_path_version();
     
 
 
@@ -34,7 +36,8 @@ private:
 
     map<string, string> header_map;
 
-    string lin_str;
+    string tmp_key;
+    string tmp_value;
 };
 
 
