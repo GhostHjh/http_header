@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <http_header.h>
 #include <iostream>
+#include <map>
 #include <ostream>
 #include <stdexcept>
 #include <string>
@@ -30,7 +31,7 @@ void http_header::show()
         std::cout << i->first << '=' << i->second << '&';
 }
 
-bool http_header::client_is_ok()
+bool http_header::client_header_is_ok()
 {
     return client_header_map.count("request_type") && client_header_map.count("request_path") && client_header_map.count("request_http_version");
 }
@@ -38,6 +39,20 @@ bool http_header::client_is_ok()
 const std::string& http_header::operator[](std::string argv_key)
 {
     return client_header_map[argv_key];
+}
+const std::string http_header::get_request_type()
+{
+    return client_header_map["request_type"];
+}
+
+const std::string http_header::get_request_path()
+{
+    return client_header_map["request_path"];
+}
+
+const std::string http_header::get_request_http_version()
+{
+    return client_header_map["request_http_version"];
 }
 
 const std::string http_header::get_accept_type()
@@ -48,6 +63,11 @@ const std::string http_header::get_accept_type()
         return return_str;
     else
         return return_str.substr(0, return_str_index);
+}
+
+const std::map< std::string, std::string > http_header::get_post()
+{
+    return client_header_post_map;
 }
 
 void http_header::client_header_map_init()

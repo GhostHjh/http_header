@@ -15,10 +15,15 @@ public:
 //client_header有关的函数
 public:
     void show();
-    bool client_is_ok();
+    bool client_header_is_ok();
 
     const std::string& operator[](std::string argv_key);
+    const std::string get_request_type();
+    const std::string get_request_path();
+    const std::string get_request_http_version();
     const std::string get_accept_type();
+
+    const std::map< std::string, std::string > get_post();
     
 private:
     void client_header_map_init();

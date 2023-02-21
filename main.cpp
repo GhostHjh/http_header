@@ -17,7 +17,9 @@ int main(int argc, char** argv)
     //cout << tmp.get_server_header() << endl;
 
     tmp.add_server_header_request_status();
-    tmp.add_server_header_request_type_length("text/html", 4096);
+    tmp.add_server_header_request_type_length("text/html", 4096); 
+    tmp.add_server_header({"cs1", "1", "cs2", "2"});
+    tmp.add_serverheader_request_end();
     cout << tmp.get_server_header() << endl;
 
 
