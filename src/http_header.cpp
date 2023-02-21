@@ -141,6 +141,9 @@ void http_header::add_server_header(std::initializer_list< std::string > argv_pa
     {
         server_header_map[*i] = *(i+1);
     }
+    
+    for(auto i : server_header_map)
+        server_header_str += i.first + " : " + i.second + "\r\n";
 
 }
 
@@ -150,10 +153,7 @@ void http_header::add_serverheader_request_end()
 }
 
 const std::string http_header::get_server_header()
-{
-    for(auto i : server_header_map)
-        server_header_str += i.first + " : " + i.second + "\r\n";
-    
+{    
     return server_header_str;
 }
 
