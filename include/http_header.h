@@ -10,7 +10,7 @@ class http_header
 {
 public:
     http_header() = delete;
-    http_header(std::string argv_client_header_str, std::string argv_client_request_path_default_str = "/index.html");
+    http_header(std::string argv_client_header_str);
     ~http_header();
 
 //client_header有关的函数
@@ -27,14 +27,12 @@ public:
 
 private:
     void client_header_map_init();
-    void path_default_init();
 
 private:
     //存储客户端发来的header字符串和解析完的键致对
     std::string client_header_str;
     std::map< std::string, std::string > client_header_map;
     std::map< std::string, std::string > client_header_post_map;
-    std::string path_default;
 
 
 //server_header有关的函数
@@ -45,7 +43,7 @@ public:
     void add_server_header(std::initializer_list< std::string > argv_pair_s);
     void add_serverheader_request_end();
 
-    std::string& add_server_header(std::string argv_key);
+    void add_server_header(std::string argv_key, std::string argv_value);
     
     const std::string get_server_header();
 
@@ -54,7 +52,6 @@ private:
 private:
     //存储用于回应客户端的header字符串和键值对
     std::string server_header_str;
-    std::map< std::string, std::string > server_header_map;
 };
 
 

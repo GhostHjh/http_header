@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <string>
 
-http_header::http_header(std::string argv_client_header_str, std::string argv_path_defult_str)
-    : client_header_str(argv_client_header_str), path_default(argv_path_defult_str)
+http_header::http_header(std::string argv_client_header_str)
+    : client_header_str(argv_client_header_str)
 {
     client_header_map_init();
 }
@@ -83,7 +83,6 @@ void http_header::client_header_map_init()
     //获取客户端请求的路径
     for (; client_header_str[client_header_str_index] != ' '; ++client_header_str_index)
         client_header_map["request_path"] += client_header_str[client_header_str_index];
-    path_default_init();
     ++client_header_str_index;
 
     //获取客户端发送请求的HTTP版本
@@ -136,12 +135,6 @@ void http_header::client_header_map_init()
     }
 }
 
-void http_header::path_default_init()
-{
-    if (client_header_map["request_path"] == "/")
-        client_header_map["request_path"] = path_default;
-}
-
 //*************************************************************************************************
 
 void http_header::add_server_header_request_status(double argv_request_http_version, int argv_request_status, std::string argv_request_status_why)
@@ -154,24 +147,13 @@ void http_header::add_server_header_request_type_length(std::string argv_request
     server_header_str += "Content-Type: " + argv_request_type +"\r\nContent-length: " + std::to_string(argv_request_length) + "\r\n";
 }
 
-//void http_header::add_server_header_request_length(int argv_request_length)
-//{
-//    server_header_str += "Content-Type: " + get_accept_type() +"\r\nContent-length: " + std::to_string(argv_request_length) + "\r\n";
-//}
-
 void http_header::add_server_header(std::initializer_list< std::string > argv_pair_s)
 {
     if (argv_pair_s.size() % 2 != 0)
-        std::logic_error("参数不够");
+        std::logic_error("参数过多或过少");
     
-    for (auto i = argv_pair_s.begin(); i != argv_pair_s.end(); i += 2)
-    {
-        server_header_map[*i] = *(i+1);
-    }
-    
-    for(auto i : server_header_map)
-        server_header_str += i.first + " : " + i.second + "\r\n";
-
+    for (auto value = argv_pair_s.begin(); value != argv_pair_s.end(); ++value)
+        server_header_str += *(value) + ": " + *(++value) + "\r\n";
 }
 
 void http_header::add_serverheader_request_end()
@@ -184,9 +166,9 @@ const std::string http_header::get_server_header()
     return server_header_str;
 }
 
-std::string& http_header::add_server_header(std::string argv_key)
+void http_header::add_server_header(std::string argv_key, std::string argv_value)
 {
-    return server_header_map[argv_key];
+    server_header_str += argv_key + ": " + argv_value + "\r\n";
 }
 
 
